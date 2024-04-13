@@ -1,0 +1,79 @@
+openapi: 3.0.0
+info:
+    title: My Web API
+    version: 1.0.0
+paths:
+    /stations:
+        get:
+            summary: Get station data
+            operationId: getData
+            tags:
+                - stations
+            parameters:
+            - in: query
+              name: stationId
+              description: get station data by ID
+              required: true
+              schema:
+                type: string
+                #format: int32
+            responses:
+                '200':
+                    description: Retrieves station data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/testData"
+                default:
+                    description: unexpected error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/badJSON"
+
+
+
+components:
+    schemas:
+        testData:
+            type: object
+            properties:
+                id:
+                    type: string
+                stationName:
+                    type: string
+                stationEmail:
+                    type: string
+                message: 
+                    type: string
+                images: 
+                    type: string
+                pressure:
+                    type: string
+                temperature:
+                    type: string
+            example:
+                id: 1
+                stationName: Station 1
+                stationEmail: stationDerulo
+                message: "Hello World"
+                images: "image1"
+                pressure: "1000"
+                temperature: "30"
+
+        badJSON:
+            type: object
+            properties:
+                id:
+                    type: integer
+                stationName:
+                    type: string
+                stationEmail:
+                    type: string
+                message: 
+                    type: string
+            example:
+                id: 1000
+                stationName: bad station 
+                stationEmail: stationDeruloBAD
+                message: "This is bad"
