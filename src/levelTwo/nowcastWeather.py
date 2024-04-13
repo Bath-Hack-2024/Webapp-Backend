@@ -2,7 +2,30 @@ import numpy
 import argparse
 #Function to nowcast the weather from pressure and altitude
 def get_weather_rating(pressure, altitude):
-
+    '''
+    Function to nowcast the weather from pressure and altitude
+    INPUTS:
+    pressure: Pressure in hPa
+    altitude: Altitude in metres above sea level
+    
+    OUTPUTS:
+    Difference in pressure from the background pressure at the closest altitude in the table
+    Negative values indicate lower pressure than background, positive values indicate higher pressure than background
+    Positive values indicate better weather, negative values indicate worse weather
+    
+    EXAMPLE:
+    weather_rating = get_weather_rating(pressure, altitude)
+    '''
+    #Check if inputs are floats and are within the valid range
+    if type(pressure) != float or type(altitude) != float:
+        print("Invalid input type. Please enter a float value.")
+        raise TypeError
+    if pressure < 0 or pressure > 2000:
+        print("Invalid pressure value. Please enter a value between 0 and 2000.")
+        raise ValueError
+    elif altitude < -100 or altitude > 10000:
+        print("Invalid altitude value. Please enter a value between 0 and 10000.")
+        raise ValueError
     #Pressure and altitude conversion table
     altitude_pressure_conversion = numpy.array([
         [0, 1013.25],
@@ -27,33 +50,3 @@ def get_weather_rating(pressure, altitude):
     #Find the difference between the current pressure and the background pressure
     pressureDiff = pressure - pressureBackground
     return pressureDiff
-
-#INPUTS:
-#Pressure in hPa
-#Altitude in metres above sea level
-
-#OUTPUTS:
-#Difference in pressure from the background pressure at the closest altitude in the table
-#Negative values indicate lower pressure than background, positive values indicate higher pressure than background
-#Positive values indicate better weather, negative values indicate worse weather
-#EXAMPLE:
-#weather_rating = get_weather_rating(pressure, altitude)
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Nowcast Weather")
-    parser.add_argument("pressure", type=float, help="Pressure in hPa")
-    parser.add_argument("altitude", type=float, help="Altitude in meters above sea level")
-    args = parser.parse_args()
-
-    pressure = args.pressure
-    altitude = args.altitude
-
-    # Check if pressure and altitude values are within acceptable range
-    if pressure < 0 or pressure > 2000:
-        print("Invalid pressure value. Please enter a value between 0 and 2000.")
-    elif altitude < -100 or altitude > 10000:
-        print("Invalid altitude value. Please enter a value between 0 and 10000.")
-    else:
-        weather_rating = get_weather_rating(pressure, altitude)
-        print("Weather Rating:", weather_rating)
-

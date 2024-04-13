@@ -8,6 +8,20 @@ import argparse
 # Returns the maximum difference in variance
 
 def find_brightest_star(image):
+    '''
+    Finds the brightest star in the image and returns its coordinates and the variance of the 3x3 square around it.
+    INPUTS:
+    image: Greyscale image
+    
+    OUTPUTS:
+    width: x-coordinate of the brightest pixel
+    height: y-coordinate of the brightest pixel
+    var_total: Variance of the 3x3 square around the brightest pixel
+    '''
+    if type(image) != Image.Image:
+        print("Invalid input type. Please enter an image.")
+        raise TypeError
+
     # Takes a greyscale image
     # Finds the brightest pixel in the image and gets its value
     region_of_interest = image.crop((5, 5, image.size[0]-5, image.size[1]-5))
@@ -28,6 +42,22 @@ def find_brightest_star(image):
                 return [width, height, var_total]
 
 def track_star(images):
+    '''
+    Calculates the maximum difference in variance of the brightest star between the first image and the rest of the images.
+    
+    INPUTS:
+    images: List of image file paths
+    
+    OUTPUTS:
+    max_diff: Maximum difference in variance between the first image and the rest of the images
+    
+    EXAMPLE:
+    max_diff = track_star(images)
+    '''
+    if type(images) != list:
+        print("Invalid input type. Please enter a list of image file paths.")
+        raise TypeError
+    
     # Loads the first image as a greyscale image
     first_image = Image.open(images[0]).convert('L')
     variances = []
