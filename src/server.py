@@ -17,4 +17,8 @@ def create_flask_app(app_cfg):
     def register_station():
         return register_station_handler(app)
     
+    @app.route('/upload-data', methods=['POST'])
+    def upload_data():
+        return upload_data_handler(app)
+    
     return app
