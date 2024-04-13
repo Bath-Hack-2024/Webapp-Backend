@@ -21,4 +21,8 @@ def create_flask_app(app_cfg):
     def upload_data():
         return upload_data_handler(app)
     
+    @app.route('/upload-image', methods=['POST'])
+    def upload_image():
+        return upload_image_handler(app)
+    
     return app
