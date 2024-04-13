@@ -1,11 +1,7 @@
-from flask import Flask
+
+from server import create_flask_app
 import config as cfg
 
-app = Flask(__name__)
-
-@app.route('/')
-def hello():
-    return 'Hello, World!'
-
 if __name__ == '__main__':
+    app = create_flask_app(cfg.app_config)
     app.run(host='0.0.0.0', debug=cfg.debug_mode, port=cfg.port)
