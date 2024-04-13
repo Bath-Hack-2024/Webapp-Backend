@@ -90,7 +90,8 @@ def main(time, pressure):
     #print(timeInd)
     [gradOne, timeArray] = gradientalOne(pressure, numPoints, time, timeInd)
     gradAvg = gradientalTwo(gradOne)
-    print(gradAvg)
+    return gradAvg
+    #print(gradAvg)
     #plt.figure()
     #plt.plot(gradOne)
     #plt.figure()
@@ -109,7 +110,7 @@ sample = [ int(x) for x in sample ]
 smooth_data = generate_smooth_data(start_value, end_value, num_points)
 '''
 
-main(sample, smooth_data)
+avgGrad = main(sample, smooth_data)
 #plt.plot(sample, smooth_data)
 #plt.show()
 #print(smooth_data)
