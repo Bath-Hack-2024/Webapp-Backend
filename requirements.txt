@@ -2,3 +2,4 @@ python-dotenv
 Flask
 pytest
 pytest-flask
+firebase-admin

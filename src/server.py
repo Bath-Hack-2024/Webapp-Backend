@@ -13,4 +13,8 @@ def create_flask_app(app_cfg):
     def hello():
         return status_hadnler(app)
     
+    @app.route('/register_station', methods=['POST'])
+    def register_station():
+        return register_station_handler(app)
+    
     return app

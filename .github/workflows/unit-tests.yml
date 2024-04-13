@@ -11,5 +11,13 @@ jobs:
       - name: Install dependencies
         run:  pip install -r requirements.txt
 
+      # Pipe content of $FIREBASE_JSON
+      - name: Set up Firebase credentials
+        run: echo ${{ secrets.FIREBASE_JSON }} > $HOME/firebase.json
+
+      # Set up the environment variable
+      - name: Set up environment variables
+        run: echo "FIREBASE_API_KEY_FILE=$HOME/firebase.json" >> $GITHUB_ENV
+
       - name: Run tests
         run: pytest
