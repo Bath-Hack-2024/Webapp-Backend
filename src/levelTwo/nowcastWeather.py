@@ -1,5 +1,7 @@
 import numpy
+#Function to nowcast the weather from pressure and altitude
 def get_weather_rating(pressure, altitude):
+    #Pressure and altitude conversion table
     altitude_pressure_conversion = numpy.array([
         [0, 1013.25],
         [100, 1011.25],
@@ -14,28 +16,20 @@ def get_weather_rating(pressure, altitude):
         [1000, 993.25]
     ])
     altDiff = numpy.array([])
+    #Find the closest altitude in the table to the current altitude
     for i in range(len(altitude_pressure_conversion)):
-        #print(i)
         altDiff = numpy.append(altDiff, numpy.absolute(altitude - altitude_pressure_conversion[i, 0]))
-
+    #Find the pressure at the closest altitude
     pressureBackgroundInd = numpy.argmin(altDiff)
     pressureBackground = altitude_pressure_conversion[pressureBackgroundInd, 1]
-    print(pressureBackground)
+    #Find the difference between the current pressure and the background pressure
     pressureDiff = pressure - pressureBackground
-    print(pressureDiff)
-    if pressureDiff < -10:
-        return "stormy"
-    elif pressureDiff < -5:
-        return "rainy"
-    elif pressureDiff < 5:
-        return "cloudy"
-    elif pressureDiff < 10:
-        return "sunny"
-    else:
-        return "clear"
-# Example usage
-pressure_measurement = 1000
-altitude = 180
-weather_rating = get_weather_rating(pressure_measurement, altitude)
-print(f"The weather rating is: {weather_rating}")
+    return pressureDiff
+
+#INPUTS:
+#Pressure in hPa
+#Altitude in metres above sea level
+weather_rating = get_weather_rating(pressure, altitude)
+#OUTPUTS:
+#Difference in pressure from the background pressure at the closest altitude in the table
 
