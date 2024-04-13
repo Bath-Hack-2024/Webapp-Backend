@@ -13,7 +13,7 @@ jobs:
 
       # Pipe content of $FIREBASE_JSON
       - name: Set up Firebase credentials
-        run: echo "${{ secrets.FIREBASE_JSON }}" > $HOME/firebase.json
+        run: echo ${{ secrets.FIREBASE_JSON }} > $HOME/firebase.json
 
       # Set up the environment variable
       - name: Set up environment variables
