@@ -4,3 +4,4 @@ pytest
 pytest-flask
 firebase-admin
 jsonschema
+flask-cors
