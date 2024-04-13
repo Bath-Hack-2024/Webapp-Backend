@@ -1,5 +1,7 @@
 on:
   push:
+    branches:
+      - main  # or whatever branch you want to trigger this on
 
 jobs:
   unit-test:
@@ -7,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2  # Specify the action to checkout code
 
       - name: Install dependencies
         run:  pip install -r requirements.txt
