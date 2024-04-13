@@ -13,4 +13,3 @@ sudo pip install -r requirement.txt
 sudo python src/app.py
 ```
 
-
