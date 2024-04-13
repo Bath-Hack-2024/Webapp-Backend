@@ -1,0 +1,75 @@
+openapi: 3.0.0
+info:
+    title: My Web API
+    version: 1.0.0
+paths:
+    /stations:
+        get:
+            summary: Get stations
+            operationId: getStations
+            tags:
+                - stations
+            parameters:
+            - in: query
+              name: stationId
+              description: get station by ID
+              required: false
+              schema:
+                type: string
+                #format: int32
+            - in: query
+              name: stationEmail
+              description: get station by email
+              required: false
+              schema:
+                 type: string
+                 #format: int32
+            responses:
+                '200':
+                    description: Retrieves station
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/testJSON"
+                default:
+                    description: unexpected error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/badJSON"
+
+
+
+components:
+    schemas:
+        testJSON:
+            type: object
+            properties:
+                id:
+                    type: integer
+                stationName:
+                    type: string
+                stationEmail:
+                    type: string
+                message: 
+                    type: string
+            example:
+                id: 1
+                stationName: Station 1
+                stationEmail: stationDerulo
+
+        badJSON:
+            type: object
+            properties:
+                id:
+                    type: integer
+                stationName:
+                    type: string
+                stationEmail:
+                    type: string
+                message: 
+                    type: string
+            example:
+                id: 1000
+                stationName: bad station 
+                stationEmail: stationDeruloBAD
