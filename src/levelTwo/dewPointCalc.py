@@ -1,17 +1,16 @@
-import math
+# This script calculates the dew point temperature and dew point spread given the relative humidity and temperature.
 
 def calculate_dew_point(relative_humidity, temperature):
-    
+    #Calculates the dew point temperature (only accurate over 50% RH)
     dew_point = temperature - ((100 - relative_humidity)/5)
+    #Calculates the dew point spread from the current temperature
     dew_point_spread = dew_point - temperature
     return dew_point, dew_point_spread
 
-# Example usage
-relative_humidity = float(input("Enter relative humidity (%): "))
-temperature = float(input("Enter temperature (°C): "))
-
+#INPUTS:
+#Relative humidity as a percentage
+#Temperature in degrees Celsius
 [dew_point, dew_point_spread] = calculate_dew_point(relative_humidity, temperature)
-print("Dew point temperature: {:.2f}°C".format(dew_point))
-print("Dew point spread: {:.2f}°C".format(dew_point_spread))
-if dew_point_spread < -10:
-    print("Probably foggy.")
+#OUTPUTS:
+#Dew point temperature in degrees Celsius
+#Dew point spread in degrees Celsius

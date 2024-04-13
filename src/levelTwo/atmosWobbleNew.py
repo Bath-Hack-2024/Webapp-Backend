@@ -51,11 +51,8 @@ def track_star(images):
     maxDiff = max(numpy.absolute(allDiffs))
     return maxDiff
 
-
-# List of image file paths
-image_files = ["src/levelTwo/testData/image1.png", "src/levelTwo/testData/image2.png", "src/levelTwo/testData/image3.png"]
-
-# Call the track_star function with the list of image files
-ratio = track_star(image_files)
-
-#THIS IS WHERE THE OUPUT GOES, FIGURE OUT WHAT IT MEANS REALISTICALLY
+#INPUTS:
+#List of image files
+maxDiffVarience = track_star(image_files)
+#OUTPUTS:
+#Maximum difference in varience of the brightest star between the first image and the rest of the images
