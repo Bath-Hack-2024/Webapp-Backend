@@ -1,53 +1,53 @@
-import cv2
 from PIL import Image
 import numpy
-import math
+
+#Function to find the atmospheric wobble
+#Uses the varience of the brightest star in the first image
+#Then compares the the varience of the same place in subsequent images
+#Returns the maximum difference in varience
 
 def find_brightest_star(image):
-    # Convert image to grayscale
-    #gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gray = image
-    # Find the brightest spot in the image
-    #_, max_val, _, max_loc = cv2.minMaxLoc(gray)
-    max_value = numpy.amax(gray)
+
+    #Takes a greyscale image
+    #Finds the brightest pixel in the image and gets the value of it
+    max_value = numpy.amax(image)
     varience = []
-    #print(max_value)
-    for width in range(gray.size[0]):
-        for height in range(gray.size[1]):
-            if gray.getpixel((width, height)) == max_value:
-                print(numpy.arange(width-3,width+4))
+
+    #Iterates through the image to find the coordinates of the brightest pixel
+    for width in range(image.size[0]):
+        for height in range(image.size[1]):
+            if image.getpixel((width, height)) == max_value:
+                #Takes the varience of the 3x3 square around the brightest pixel
                 for x in numpy.arange(width-3,width+4):
                     for y in numpy.arange(height-3,height+4):
-                        varience.append(gray.getpixel((x, y)))
+                        varience.append(image.getpixel((x, y)))
 
                 varTotal = numpy.var(varience)
-                print(varTotal)
+                #Returns the coordinates of the brightest pixel and the varience of the 3x3 square around it
                 return [width,height, varTotal]
 
 def track_star(images):
-    # Load the first image
+    #Loads the first image as a greyscale image
     first_image = Image.open(images[0]).convert('L')
     varience = []
-    # Find the position of the brightest star in the first image
+    #Find the position of the brightest star in the first image and its varience
     [width1, height1, max_value] = find_brightest_star(first_image)
     allDiffs = [0] * (len(images)-1)
-    # Track the star in the subsequent images
+    #Iterate through the rest of the images
     for i in range(1, len(images)):
-        # Load the current image
+        #Load the current image as a greyscale image
         current_image = Image.open(images[i]).convert('L')
-
+        #Finds the varience of a 3x3 square around the coordinates of the brightest pixel in the first image
         for x in numpy.arange(width1-3,width1+4):
             for y in numpy.arange(height1-3,height1+4):
                 varience.append(current_image.getpixel((x, y)))
 
         varBright = numpy.var(varience)
-
+        #Find the difference in varience between the first image and the current image
         diffBright = varBright - max_value
-
-        # Print the distance between the positions
-        print(f"Difference in varience: {diffBright}")
         allDiffs[i-1] = diffBright
     
+    #Returns the maximum difference in varience between the first image and the rest of the images
     maxDiff = max(numpy.absolute(allDiffs))
     return maxDiff
 
@@ -58,4 +58,4 @@ image_files = ["src/levelTwo/testData/image1.png", "src/levelTwo/testData/image2
 # Call the track_star function with the list of image files
 ratio = track_star(image_files)
 
-print(ratio)
+#THIS IS WHERE THE OUPUT GOES, FIGURE OUT WHAT IT MEANS REALISTICALLY
