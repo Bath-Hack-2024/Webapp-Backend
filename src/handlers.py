@@ -2,10 +2,12 @@ from flask import Flask, request, jsonify
 import json
 from firebase_interface import init_firebase
 from firebase_admin import firestore
+from firebase_admin import storage  
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 from data_schemas import weather_station_upload_schema
 from datetime import datetime
+import config as cfg
 
 app, db = init_firebase()
 
@@ -68,7 +70,7 @@ def upload_data_handler(app: Flask):
     
     except ValidationError as e:
         return build_response({'error': e.message}, 400, app)
-    
+        
     station_id = data.get('station_id').strip()
     lat = data.get('lat')
     lon = data.get('lon')
@@ -76,6 +78,7 @@ def upload_data_handler(app: Flask):
     temperature = data.get('temperature')
     humidity = data.get('humidity')
     barometric_pressure = data.get('barometric_pressure')
+    img_url = data.get('img_url')
 
     # Get search each user in users collection for a station in a station collection for the station_id
     user_collection_ref = db.collection('users')
@@ -94,7 +97,8 @@ def upload_data_handler(app: Flask):
                         'temperature': temperature,
                         'humidity': humidity,
                         'barometric_pressure': barometric_pressure,
-                        'timestamp': datetime.now()
+                        'timestamp': datetime.now(),
+                        'img_url': img_url
                     }])
                 })
 
@@ -102,3 +106,28 @@ def upload_data_handler(app: Flask):
 
 
     return build_response({'error': 'Station not found'}, 404, app)
+
+def upload_image_handler(app: Flask):
+    if 'file' not in request.files:
+        return build_response({'error': 'No file part'}, 400, app)
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        return build_response({'error': 'No selected file'}, 400, app)
+    
+    if not file.filename.endswith('.jpg') :
+        return build_response({'error': 'Invalid file type (only jpg)'}, 400, app)
+    
+    # Upload file to firebase storage
+    bucket = storage.bucket()
+    blob = bucket.blob(file.filename)
+    blob.upload_from_string(file.read(), content_type='image/jpg')
+
+    resource_path = f"{cfg.public_view_url}/{blob.name}?alt=media"
+
+
+
+    #retunr file path
+    return build_response({'file_path': resource_path }, 200, app)
+    

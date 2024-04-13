@@ -8,6 +8,7 @@ weather_station_upload_schema = {
         "temperature": {"type": "number"},
         "humidity": {"type": "number"},
         "barometric_pressure": {"type": "number"},
+        "img_url": {"type": "string"},
     },
     "required": ["lat", "lon", "station_id", ]
 }
