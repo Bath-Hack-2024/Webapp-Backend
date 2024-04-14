@@ -36,4 +36,9 @@ def create_flask_app(app_cfg):
     def get_stations():
         return get_stations_handler(app)
     
+    @app.route('/get-station-data', methods=['GET'])
+    @cross_origin()
+    def get_station_data():
+        return get_station_data_handler(app)
+    
     return app
