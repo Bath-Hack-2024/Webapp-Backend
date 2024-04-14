@@ -9,6 +9,7 @@ from data_schemas import weather_station_upload_schema
 from datetime import datetime
 import config as cfg
 from util import add_l2_data
+from data_science.clouds import getCloudCoverPercentage
 
 app, db = init_firebase()
 
@@ -90,6 +91,7 @@ def upload_data_handler(app: Flask):
 
         for station in stations:
             if station.id == station_id:
+                cloud_coverage = getCloudCoverPercentage(img_url)
                 station.reference.update({
                     'data': firestore.ArrayUnion([{
                         'lat': lat,
@@ -99,7 +101,8 @@ def upload_data_handler(app: Flask):
                         'humidity': humidity,
                         'barometric_pressure': barometric_pressure,
                         "time_stamp": datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                        'img_url': img_url
+                        'img_url': img_url,
+                        'cloud_coverage': cloud_coverage
                     }])
                 })
 
