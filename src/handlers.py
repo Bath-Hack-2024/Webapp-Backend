@@ -195,10 +195,10 @@ def get_station_data_handler(app: Flask):
         for station in stations:
             if station_id:
                 if station.id == station_id:
-                    station_data[station.id] = station.get('data')
+                    station_data[station.id] = station.to_dict().get('data', [])
                 
                     return build_response(station_data, 200, app)
             
             else:
-                station_data[station.id] = station.get('data')
+                station_data[station.id] = station.to_dict().get('data', [])
     return build_response(station_data, 200, app)
