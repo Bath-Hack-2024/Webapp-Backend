@@ -132,10 +132,10 @@ def upload_image_handler(app: Flask):
     return build_response({'file_path': resource_path }, 200, app)
 
 def get_stations_handler(app: Flask):
-    data = request.get_json()
+   # get data from url encoded query string
 
-    station_id = data.get('id', None)
-    email = data.get('email', None)
+    station_id = request.args.get('id', None)
+    email = request.args.get('email', None)
 
     if station_id:
         user_collection_ref = db.collection('users')
