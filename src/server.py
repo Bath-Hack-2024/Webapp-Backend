@@ -16,7 +16,7 @@ def create_flask_app(app_cfg):
     def hello():
         return status_hadnler(app)
     
-    @app.route('/register_station', methods=['POST'])
+    @app.route('/register-station', methods=['POST'])
     @cross_origin()
     def register_station():
         return register_station_handler(app)
@@ -30,5 +30,10 @@ def create_flask_app(app_cfg):
     @cross_origin()
     def upload_image():
         return upload_image_handler(app)
+    
+    @app.route('/get-stations', methods=['GET'])
+    @cross_origin()
+    def get_stations():
+        return get_stations_handler(app)
     
     return app
