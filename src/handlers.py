@@ -10,7 +10,7 @@ from datetime import datetime
 import config as cfg
 from util import add_l2_data
 from data_science.clouds import getCloudCoverPercentage
-
+from data_science.future_cast import get_futurecast
 app, db = init_firebase()
 
 def build_response(data, status_code, app: Flask):
@@ -210,4 +210,39 @@ def get_station_data_handler(app: Flask):
 
     data_with_l2 = add_l2_data(station_data)
     return build_response(data_with_l2, 200, app)
+
+def get_station_forcast_handler(app: Flask):
+    station_id = request.args.get('id', None)
+
+    dates = []
+    values = []
+
+    if not station_id:
+        return build_response({'error': 'Station id is required'}, 400, app)
+    
+    user_collection_ref = db.collection('users')
+    users = user_collection_ref.stream()
+
+    for user in users:
+        stations = user.reference.collection('stations').stream()
+        for station in stations:
+            if station.id == station_id:
+                data = station.to_dict().get('data', [])
+
+                if len(data) == 0:
+                    return build_response({"focast": None}, 404, app)
+                
+                for point in data:
+                    #convert dates to unix timestamp
+                    date = datetime.strptime(point['time_stamp'], "%m/%d/%Y, %H:%M:%S")
+                    dates.append(date.timestamp())
+                    values.append(point.get('barometric_pressure'))
+
+                try:
+                    now_cast = get_futurecast(dates, values)
+
+                except Exception as e:
+                    return build_response({'error': str(e)}, 500, app)
+                
+                return build_response({'forcast': now_cast}, 200, app)
 
