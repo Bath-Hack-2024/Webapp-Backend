@@ -1,7 +1,7 @@
 from data_science.now_cast import get_weather_nowcast_pressure
 from data_science.dew_point import calculate_dew_point
 from data_science.moon import get_moon_phase, is_moon_visible
-from data_science.clouds import getCloudCoverPercentage
+from data_science.score import getCurrentScore
 
 from datetime import datetime
 
@@ -15,6 +15,7 @@ def add_l2_data(data):
             barometric_pressure = float(point.get('barometric_pressure'))
             elevation = float(point.get('elevation'))
             image_url = point.get('img_url')
+            cloud_coverage = point.get('cloud_coverage')
 
             try:
                 now_cast = get_weather_nowcast_pressure(barometric_pressure, elevation)
@@ -35,6 +36,14 @@ def add_l2_data(data):
                 moon_phase = None
                 moon_visible = None
 
+            try:
+                score = getCurrentScore(cloudCoverPercentage=cloud_coverage, moonPhase=moon_phase, moonVisible=moon_visible, dewPointSpread=dew_point_spread)
+            except Exception as e:
+                print(e)
+                score = None
+
+            
+
             
 
             point['now_cast'] = now_cast
@@ -42,6 +51,7 @@ def add_l2_data(data):
             point['dew_point_spread'] = dew_point_spread
             point['moon_phase'] = moon_phase
             point['moon_visible'] = moon_visible
+            point['score'] = score
 
 
     return data
