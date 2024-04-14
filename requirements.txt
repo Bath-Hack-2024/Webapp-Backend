@@ -5,3 +5,8 @@ pytest-flask
 firebase-admin
 jsonschema
 flask-cors
+numpy
+PyEphem
+torch
+torchvision
+PILLOW

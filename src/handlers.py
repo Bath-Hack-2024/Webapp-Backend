@@ -8,6 +8,8 @@ from jsonschema.exceptions import ValidationError
 from data_schemas import weather_station_upload_schema
 from datetime import datetime
 import config as cfg
+from util import add_l2_data
+from data_science.clouds import getCloudCoverPercentage
 
 app, db = init_firebase()
 
@@ -89,6 +91,7 @@ def upload_data_handler(app: Flask):
 
         for station in stations:
             if station.id == station_id:
+                cloud_coverage = getCloudCoverPercentage(img_url)
                 station.reference.update({
                     'data': firestore.ArrayUnion([{
                         'lat': lat,
@@ -98,7 +101,8 @@ def upload_data_handler(app: Flask):
                         'humidity': humidity,
                         'barometric_pressure': barometric_pressure,
                         "time_stamp": datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                        'img_url': img_url
+                        'img_url': img_url,
+                        'cloud_coverage': cloud_coverage
                     }])
                 })
 
@@ -196,9 +200,14 @@ def get_station_data_handler(app: Flask):
             if station_id:
                 if station.id == station_id:
                     station_data[station.id] = station.to_dict().get('data', [])
-                
-                    return build_response(station_data, 200, app)
+
+                    data_with_l2 = add_l2_data(station_data)
+                    return build_response(data_with_l2, 200, app)
+            
             
             else:
                 station_data[station.id] = station.to_dict().get('data', [])
-    return build_response(station_data, 200, app)
+
+    data_with_l2 = add_l2_data(station_data)
+    return build_response(data_with_l2, 200, app)
+
