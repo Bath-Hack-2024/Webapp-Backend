@@ -41,4 +41,9 @@ def create_flask_app(app_cfg):
     def get_station_data():
         return get_station_data_handler(app)
     
+    @app.route('/get-station-forcast', methods=['GET'])
+    @cross_origin()
+    def get_station_forcast():
+        return get_station_forcast_handler(app)
+    
     return app
