@@ -130,4 +130,56 @@ def upload_image_handler(app: Flask):
 
     #retunr file path
     return build_response({'file_path': resource_path }, 200, app)
+
+def get_stations_handler(app: Flask):
+    data = request.get_json()
+
+    station_id = data.get('id', None)
+    email = data.get('email', None)
+
+    if station_id:
+        user_collection_ref = db.collection('users')
+        users = user_collection_ref.stream()
+
+        for user in users:
+            stations = user.reference.collection('stations').stream()
+
+            for station in stations:
+                if station.id == station_id:
+                    station_name = station.get('name')
+                    
+                    return build_response({"stations":[{'station_name': station_name, 'station_id': station.id}]}, 200, app)
+
+        return build_response({'error': 'Station not found'}, 404, app)
     
+    elif email:
+        user_collection_ref = db.collection('users')
+        user = user_collection_ref.document(email).get()
+
+        if not user.exists:
+            return build_response({'error': 'User not found'}, 404, app)
+
+        stations = user.reference.collection('stations').stream()
+        station_data = []
+
+        for station in stations:
+            station_data.append({'station_name': station.get('name'), 'station_id': station.id})
+
+        return build_response({'stations': station_data}, 200, app)
+    
+    else:
+        # Return all stations
+        user_collection_ref = db.collection('users')
+        users = user_collection_ref.stream()
+
+        all_stations = []
+
+        for user in users:
+            stations = user.reference.collection('stations').stream()
+
+            for station in stations:
+                all_stations.append({'station_name': station.get('name'), 'station_id': station.id})
+
+        return build_response({'stations': all_stations}, 200, app)
+    
+    return build_response({'error': 'Invalid request'}, 400, app)

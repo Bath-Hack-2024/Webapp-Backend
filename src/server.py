@@ -31,4 +31,9 @@ def create_flask_app(app_cfg):
     def upload_image():
         return upload_image_handler(app)
     
+    @app.route('/get-stations', methods=['GET'])
+    @cross_origin()
+    def get_stations():
+        return get_stations_handler(app)
+    
     return app
