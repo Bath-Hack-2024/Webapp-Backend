@@ -97,7 +97,7 @@ def upload_data_handler(app: Flask):
                         'temperature': temperature,
                         'humidity': humidity,
                         'barometric_pressure': barometric_pressure,
-                        'timestamp': datetime.now(),
+                        "time_stamp": datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                         'img_url': img_url
                     }])
                 })
@@ -182,4 +182,23 @@ def get_stations_handler(app: Flask):
 
         return build_response({'stations': all_stations}, 200, app)
     
-    return build_response({'error': 'Invalid request'}, 400, app)
+def get_station_data_handler(app: Flask):
+    station_id = request.args.get('id', None)
+
+    station_data = {}
+
+    user_collection_ref = db.collection('users')
+    users = user_collection_ref.stream()
+
+    for user in users:
+        stations = user.reference.collection('stations').stream()
+        for station in stations:
+            if station_id:
+                if station.id == station_id:
+                    station_data[station.id] = station.get('data')
+                
+                    return build_response(station_data, 200, app)
+            
+            else:
+                station_data[station.id] = station.get('data')
+    return build_response(station_data, 200, app)
