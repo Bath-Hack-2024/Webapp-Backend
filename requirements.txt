@@ -5,3 +5,4 @@ pytest-flask
 firebase-admin
 jsonschema
 flask-cors
+numpy

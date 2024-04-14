@@ -8,6 +8,7 @@ from jsonschema.exceptions import ValidationError
 from data_schemas import weather_station_upload_schema
 from datetime import datetime
 import config as cfg
+from util import add_l2_data
 
 app, db = init_firebase()
 
@@ -196,9 +197,14 @@ def get_station_data_handler(app: Flask):
             if station_id:
                 if station.id == station_id:
                     station_data[station.id] = station.to_dict().get('data', [])
-                
-                    return build_response(station_data, 200, app)
+
+                    data_with_l2 = add_l2_data(station_data)
+                    return build_response(data_with_l2, 200, app)
+            
             
             else:
                 station_data[station.id] = station.to_dict().get('data', [])
-    return build_response(station_data, 200, app)
+
+    data_with_l2 = add_l2_data(station_data)
+    return build_response(data_with_l2, 200, app)
+
